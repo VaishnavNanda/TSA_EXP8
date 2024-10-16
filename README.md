@@ -1,5 +1,5 @@
-## Developed By : Pravin Raj A
-## Register No. : 212222240079
+## Developed By : Vaishnav nanda
+## Register No. : 212222240112
 
 # Ex.No: 08     MOVINTG AVERAGE MODEL AND EXPONENTIAL SMOOTHING
 ### Date: 
@@ -7,7 +7,7 @@
 To implement Moving Average Model and Exponential smoothing Using Python.
 ### ALGORITHM:
 1. Import necessary libraries
-2. Read the Bit-Coin time series data from a CSV file,Display the shape and the first 20 rows of
+2. Read the Meta Stock series data from a CSV file,Display the shape and the first 20 rows of
 the dataset
 3. Set the figure size for plots
 4. Suppress warnings
@@ -28,7 +28,7 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.ar_model import AutoReg
 from sklearn.metrics import mean_squared_error
 
-data = pd.read_csv("/content/BTC-USD(1).csv")
+data = pd.read_csv("Meta_stock_price.csv")
 print("Shape of the dataset:", data.shape)
 print("First 50 rows of the dataset:")
 print(data.head(50))
