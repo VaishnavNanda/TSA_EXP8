@@ -1,3 +1,7 @@
+## Developed By : Pravin Raj A
+## Register No. : 212222240079
+## Date :
+
 # Ex.No: 08     MOVINTG AVERAGE MODEL AND EXPONENTIAL SMOOTHING
 ### Date: 
 ### AIM:
