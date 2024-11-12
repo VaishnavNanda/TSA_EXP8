@@ -1,13 +1,14 @@
-## Developed By : Vaishnav nanda
-## Register No. : 212222240112
-
-# Ex.No: 08     MOVINTG AVERAGE MODEL AND EXPONENTIAL SMOOTHING
+# Developed by: S VAISHNAV NANDA
+# Reg no: 212222240112
+# Ex.No: 08     MOVINIG AVERAGE MODEL AND EXPONENTIAL SMOOTHING
 ### Date: 
+
+
 ### AIM:
 To implement Moving Average Model and Exponential smoothing Using Python.
 ### ALGORITHM:
 1. Import necessary libraries
-2. Read the Meta Stock series data from a CSV file,Display the shape and the first 20 rows of
+2. Read the meta stock price for  time series data from a CSV file,Display the shape and the first 20 rows of
 the dataset
 3. Set the figure size for plots
 4. Suppress warnings
@@ -19,76 +20,95 @@ the dataset
 10. Show the plot
 11. Also perform exponential smoothing and plot the graph
 ### PROGRAM:
-```
+```python
+# Import necessary libraries
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from statsmodels.tsa.ar_model import AutoReg
-from sklearn.metrics import mean_squared_error
+import warnings
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
-data = pd.read_csv("Meta_stock_price.csv")
-print("Shape of the dataset:", data.shape)
-print("First 50 rows of the dataset:")
-print(data.head(50))
+# Suppress warnings
+warnings.filterwarnings('ignore')
 
-plt.plot(data['Close'].head(50))  
-plt.title('First 50 values of the "Close" column') # Change: title to reflect the correct column
-plt.xlabel('Index')
-plt.ylabel('Close') # Change: y-axis label
-plt.show()
+# Read the dataset (adjust the path accordingly)
+data = pd.read_csv('meta_stock_price.csv')
 
-rolling_mean_5 = data['Close'].rolling(window=5).mean() 
-print("First 10 values of the rolling mean with window size 5:")
-print(rolling_mean_5.head(10))
+# Convert 'Date' to datetime format and set it as the index
+data['Date'] = pd.to_datetime(data['Date'], format='%m/%d/%Y')
+data.set_index('Date', inplace=True)
 
-rolling_mean_10 = data['Close'].rolling(window=10).mean()  
-plt.plot(data['Close'], label='Original Data')  
-plt.plot(rolling_mean_10, label='Rolling Mean (window=10)')  
-plt.title('Original Data and Fitted Value (Rolling Mean)')
-plt.xlabel('Index')
-plt.ylabel('Close')  # Change: y-axis label
+# Focus on the 'Adj Close' column
+adj_close_data = data[['Adj Close']]
+
+# Display the shape and the first 5 rows of the dataset
+print("Shape of the dataset:", adj_close_data.shape)
+print("First 5 rows of the dataset:")
+print(adj_close_data.head())
+
+# Plot Original Dataset (Adj Close Data)
+plt.figure(figsize=(12, 6))
+plt.plot(adj_close_data['Adj Close'], label='Original Adj Close Data', color='blue')
+plt.title('Original Adjusted Close Prices')
+plt.xlabel('Date')
+plt.ylabel('Adjusted Close Price (USD)')
 plt.legend()
+plt.grid()
 plt.show()
 
-lag_order = 13
-# Change: Replace 'International ' with 'Close' in AutoReg model
-model = AutoReg(data['Close'], lags=lag_order)  
+# Moving Average
+# Perform rolling average transformation with a window size of 10
+rolling_mean_10 = adj_close_data['Adj Close'].rolling(window=10).mean()
+
+# Plot Moving Average
+plt.figure(figsize=(12, 6))
+plt.plot(adj_close_data['Adj Close'], label='Original Adj Close Data', color='blue')
+plt.plot(rolling_mean_10, label='Moving Average (window=10)', color='orange')
+plt.title('Moving Average of Adjusted Close Prices')
+plt.xlabel('Date')
+plt.ylabel('Adjusted Close Price (USD)')
+plt.legend()
+plt.grid()
+plt.show()
+
+# Exponential Smoothing
+model = ExponentialSmoothing(adj_close_data['Adj Close'], trend='add', seasonal=None)
 model_fit = model.fit()
 
-plot_acf(data['Close'])  
-plt.title('Autocorrelation Function (ACF)')
-plt.show()
+# Make predictions for the next 30 periods (you can adjust this)
+predictions = model_fit.predict(start=len(adj_close_data), end=len(adj_close_data) + 30)
 
-plot_pacf(data['Close'])  
-plt.title('Partial Autocorrelation Function (PACF)')
-plt.show()
-
-predictions = model_fit.predict(start=lag_order, end=len(data)-1)  
-mse = mean_squared_error(data['Close'][lag_order:], predictions)  
-print('Mean Squared Error (MSE):', mse)
-
-plt.plot(data['Close'][lag_order:], label='Original Data')  
-plt.plot(predictions, label='Predictions')
-plt.title('AR Model Predictions vs Original Data')
-plt.xlabel('Index')
-plt.ylabel('Close')  # Change: y-axis label
+# Plot the original data and Exponential Smoothing predictions
+plt.figure(figsize=(12, 6))
+plt.plot(adj_close_data['Adj Close'], label='Original Adj Close Data', color='blue')
+plt.plot(predictions, label='Exponential Smoothing Forecast', color='orange')
+plt.title('Exponential Smoothing Predictions for Adjusted Close Prices')
+plt.xlabel('Date')
+plt.ylabel('Adjusted Close Price (USD)')
 plt.legend()
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.tight_layout()
 plt.show()
 ```
+
 ### OUTPUT:
 
-#### Plot the original data and fitted value
+![image](https://github.com/user-attachments/assets/f427be4e-ac2f-499d-8047-7d7c5e880395)
 
-![download](https://github.com/user-attachments/assets/48eecb99-7964-4f66-b9e6-90c80765f03d)
+Moving Average
 
-#### Plot Partial Autocorrelation Function (PACF) and Autocorrelation Function (ACF)
-![download](https://github.com/user-attachments/assets/430a8371-a3a9-48eb-ac83-2f8dc78884f9)
-![download](https://github.com/user-attachments/assets/01313652-9dd9-4388-8ba5-e94cf490da22)
+![image](https://github.com/user-attachments/assets/15ed736a-1175-41b4-b283-5acf5e54c772)
 
-#### Plot the original data and predictions
-![download](https://github.com/user-attachments/assets/532f7d96-6ccf-4861-b146-b7a39d8be522)
+Plot Transform Dataset
+
+![image](https://github.com/user-attachments/assets/333aaf99-909e-4424-b1b3-6aaa4f3a57b7)
+
+
+Exponential Smoothing
+
+![image](https://github.com/user-attachments/assets/2b14bcf0-7fe8-41e2-95f9-40cad6181f32)
+
 
 ### RESULT:
-Thus we have successfully implemented the Moving Average Model and Exponential smoothing using python.
+Thus , successful implemention of the Moving Average Model and Exponential smoothing using python is done.
